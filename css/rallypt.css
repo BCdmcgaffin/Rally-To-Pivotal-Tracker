@@ -1,0 +1,66 @@
+body {
+  font-family: arial, helvetica;
+  width: 250px;
+  margin: 0px 6px;
+}
+
+#logout_link {
+  font-size: 10px;
+}
+
+#form, #link_form {
+  padding: 16px 0px;
+  display: none;
+  width: 98%;  
+}
+
+#input_container {
+  padding-top: 10px;
+}
+
+#form > div, #link_form > div {
+  width: 100%;
+}
+
+#form label, #link_form label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  padding-bottom: 4px;
+}
+
+input {
+  padding: 6px 4px;
+  border: thin solid #aaa;
+  display: block;
+  width: 100%;
+  font-size: 14px;
+}
+
+#logout {
+  width: 100%;
+  text-align: right;
+}
+
+button {
+  margin: 12px 0px
+}
+
+#link_status {
+  display: none;
+  /* border: thin solid #666;*/
+  font-size: 10px;
+}
+
+#link_status > div {
+  margin-bottom: 4px;
+}
+
+hr {
+  border: 1px solid #ccc;
+}
+
+#reset_link {
+  text-align: right;
+  padding-top: 6px;
+}

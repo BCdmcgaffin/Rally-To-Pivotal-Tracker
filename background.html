@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" charset="utf-8">
+    function checkForRally(tabid, change_info, tab) {
+      if (tab.url.indexOf('//rally1.rallydev.com') > -1) {
+        chrome.pageAction.show(tabid);
+      }
+    }
+
+    chrome.tabs.onUpdated.addListener(checkForRally);
+  </script>
+</head>
+<body>
+  
+</body>
+</html>

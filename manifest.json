@@ -1,0 +1,23 @@
+{
+  "name": "Rally to PT",
+  "version": "0.5",
+  "description": "Create Pivotal Tracker stories based on Rally user stories",
+  "background_page": "background.html",
+  "page_action": {
+    "default_icon": "images/icon19.png",
+    "default_title": "Rally-PT Linker",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "permissions": [
+    "tabs",
+    "cookies",
+    "https://rally1.rallydev.com/*",
+    "https://www.pivotaltracker.com/",
+    "http;//localhost/*"
+  ]
+}

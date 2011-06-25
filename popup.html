@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="/css/rallypt.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript" charset="utf-8" src="js/jquery.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="js/main.js"> </script>
+<body>
+
+  <div id="form">
+    <div>
+      <label for="username">username</label>
+      <input type="text" name="username" id="username" value="" autofocus="true" />
+    </div>
+    <div id="input_container">
+      <label for="password">password</label>
+      <input type="password" name="password" id="password" value="" />
+    </div>
+    <button id="login_button">Login</button>
+  </div>
+
+  <div id="link_form">
+    <div id="logout">
+      <a id="logout_link" href="javascript:void()">logout</a>
+    </div>
+    <div>
+      <div>
+        <label for="user_story">user story</label>
+        <input type="text" name="user_story" value="" id="user_story" autofocus="true" />
+      </div>
+      <button id="link_button">Add Story to Pivotal Tracker</button>
+    </div>
+
+    <div id="link_status">
+      <hr />
+      <div id="status_msgs"></div>
+      <a id="reset_link" href="javascript:void()">reset</a>
+    </div>
+  </div>
+
+</body>
