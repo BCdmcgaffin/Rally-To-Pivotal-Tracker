@@ -23,8 +23,7 @@ $(function() {
         if (cookie) {
           pivotalToken = cookie.value;
 
-          setTimeout(showLinkView,
-                     100);
+          setTimeout(showLinkView, 100);
         } else {
           setTimeout(showLoginView, 100);
         }
@@ -92,6 +91,7 @@ $(function() {
 
     $("#link_status").show();
 
+    addStatusMsg("searching for US10061");
     $.getJSON(RALLY_US_API, 
         "query=" + user_story_query + "&fetch=true",
         function(data) {
@@ -100,14 +100,14 @@ $(function() {
           console.log("response: %o", data);
           if (data.QueryResult.Errors.length > 0 ||
               data.QueryResult.Results.length == 0) {
-            addStatusMsg("Could not find " + story_id);
+            addStatusMsg("could not find " + story_id);
           } else {
             var story = data.QueryResult.Results[0];
             
             name = story.Name;
             description = story.Description;
             
-            addStatusMsg("Found Rally user story: " + story_id);
+            addStatusMsg("found rally user story: " + story_id);
             linkStoryToPivotal(story);
           }
            
