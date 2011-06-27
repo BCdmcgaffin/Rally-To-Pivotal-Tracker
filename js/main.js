@@ -2,7 +2,8 @@ $(function() {
 
   var RALLY_URL = "https://rally1.rallydev.com";
   var PT_COOKIE_NAME = "PT_TOKEN";
-  var PIVOTAL_URL = "https://www.pivotaltracker.com/services/v3/tokens/active";
+  var PIVOTAL_GET_TOKENS = "https://www.pivotaltracker.com/services/v3/tokens/active";
+  var PIVOTAL_GET_PROJECTS = "https://www.pivotaltracker.com/services/v3/projects";
 
   var RALLY_US_API = "https://rally1.rallydev.com/slm/webservice/1.24/hierarchicalrequirement.js";
 
@@ -39,7 +40,7 @@ $(function() {
 
   function loginToPivotal() {
     console.log("login to pivotal");
-    $.post(PIVOTAL_URL, 
+    $.post(PIVOTAL_GET_TOKENS, 
           { username: $('#username').val(), password: $('#password').val() },
           function(data) {
             console.log("$.get.response: %o", data);
@@ -121,6 +122,7 @@ $(function() {
 
   function linkStoryToPivotal(story) {
     addStatusMsg("adding story to Pivotal Tracker.");
+    getPivotalProjects();
   }
   
   function onLogout() {
@@ -134,5 +136,18 @@ $(function() {
     $("#user_story").val("").focus();
     $("#status_msgs").empty();
     $("#link_status").hide();
+  }
+
+  function getPivotalProjects() {
+    $.ajax(PIVOTAL_GET_PROJECTS, {
+        headers: { 'X-TrackerToken': pivotalToken},
+        dataType: 'xml',
+        success: function(data, textStatus, jqXHR) {
+          console.log("success: %o", data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error("error: %o", errorThrown);
+        }
+      });
   }
 });
