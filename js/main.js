@@ -78,7 +78,7 @@ $(function() {
             pivotal_connector.addStory(story, projects[0], function(result) {
               var pivotal_url = $(result).find('url').text();
               console.log("pivotal story url: %s", pivotal_url);
-
+              addStatusMsg("story created in <a href='" + pivotal_url + "' target='_blank'>pivotal</a>");
             });
           } else {
             console.error("There are more projects than the 1 that I was expecting: %o", projects);
