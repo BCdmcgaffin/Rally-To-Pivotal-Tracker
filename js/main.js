@@ -64,11 +64,6 @@ $(function() {
             console.error("findUserStory returned an error: %o", result);
             addStatusMsg("could not find " + story_id);
           } else {
-            var story = result;
-            
-            name = story.Name;
-            description = story.Description;
-            
             addStatusMsg("found rally user story: " + story_id);
             linkStoryToPivotal(result.user_story);
           }

@@ -10,6 +10,8 @@ function Pivotal() {
             "<description>##STORY_DESCRIPTION##</description>" +
           "</story>";
 
+  const RALLY_DIRECT_URL = "https://rally1.rallydev.com/slm/detail/ar/";
+
   var COOKIE_URL = "https://rally1.rallydev.com";
 
   var api_token;
@@ -88,20 +90,11 @@ function Pivotal() {
     });
   };
 
- // my.addStory = function(rally_id, name, description, link, callback) {
   my.addStory = function(rally_story, pivotal_project, callback) {
     verifyAPIToken();
     
-    console.log("about to append Rally Story, %o, to pivotal_project, %o",
-                rally_story, pivotal_project);
     var request = PIVOTAL_ADD_STORY.replace("##PROJECT_ID##", pivotal_project.id);
-    var story_data = PIVOTAL_NEW_STORY_XML.replace("##STORY_NAME##", rally_story.Name);
-    story_data = story_data.replace("##STORY_DESCRIPTION##", rally_story.Description);
-
-
-    console.log("add story request: %s", request);
-    console.log("add story data: %s", story_data);
-    
+    var story_data = prepareStoryData(rally_story);
 
     $.ajax(request, {
       headers: { 'X-TrackerToken': api_token},
@@ -121,5 +114,19 @@ function Pivotal() {
     });
   };
 
+  function prepareStoryData(rally_story) {
+    var description =  RALLY_DIRECT_URL + rally_story.ObjectID + "\n\n" + stripHTML(rally_story.Description);
+    var story_data = PIVOTAL_NEW_STORY_XML.replace("##STORY_NAME##", rally_story.Name);
+    story_data = story_data.replace("##STORY_DESCRIPTION##", description);
+
+    return story_data;
+  }
+
+  function stripHTML(content)  {
+    var tmp = document.createElement("div");
+    tmp.innerHTML = content;
+    return tmp.textContent || tmp.innerText;
+  }
+  
   return my;
 }
