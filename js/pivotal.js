@@ -19,7 +19,7 @@ function Pivotal() {
           console.log("cookie callback: %o", cookie);
           callback(cookie);
           if (cookie) {
-            pivotalToken = cookie.value;
+            api_token = cookie.value;
           }
         });
 
@@ -50,6 +50,8 @@ function Pivotal() {
   };
 
   my.logout = function(callback) {
+    verifyAPIToken();
+
     chrome.cookies.remove({url: COOKIE_URL, name: PT_COOKIE_NAME});
     callback();
   };
@@ -71,7 +73,7 @@ function Pivotal() {
       });
   };
 
-  my.addStory = function(name, description, callback) {
+  my.addStory = function(rally_id, name, description, link, callback) {
     verifyAPIToken();
   };
 
