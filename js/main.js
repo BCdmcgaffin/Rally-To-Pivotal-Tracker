@@ -1,14 +1,8 @@
 $(function() {
 
-  var RALLY_URL = "https://rally1.rallydev.com";
-  var PT_COOKIE_NAME = "PT_TOKEN";
-  var PIVOTAL_GET_TOKENS = "https://www.pivotaltracker.com/services/v3/tokens/active";
-  var PIVOTAL_GET_PROJECTS = "https://www.pivotaltracker.com/services/v3/projects";
-
   var RALLY_US_API = "https://rally1.rallydev.com/slm/webservice/1.24/hierarchicalrequirement.js";
 
   var USER_STORY_QUERY = "(FormattedID%20=%20USXXXXX)";
-  var pivotalToken;
 
   $("#login_button").click(onLogin);
 
@@ -17,47 +11,27 @@ $(function() {
 
   $("#logout_link").click(onLogout);
 
-  chrome.cookies.get(
-      {url: RALLY_URL, name: PT_COOKIE_NAME},
-      function(cookie) {
-        console.log("cookie callback: %o", cookie);
-        if (cookie) {
-          pivotalToken = cookie.value;
+  var pivotal_connector = new Pivotal();
+  var rally_connector = new Rally();
 
-          setTimeout(showLinkView, 100);
-        } else {
-          setTimeout(showLoginView, 100);
-        }
-
-      });
-
+  pivotal_connector.isLoggedIn(function(cookie) {
+    if (cookie) {
+      setTimeout(showLinkView, 100);
+    } else {
+      setTimeout(showLoginView, 100);
+    }
+  });
 
   function onLogin(event) {
     console.log("onLogin was pressed");
-    loginToPivotal();
-  }
-
-
-  function loginToPivotal() {
-    console.log("login to pivotal");
-    $.post(PIVOTAL_GET_TOKENS, 
-          { username: $('#username').val(), password: $('#password').val() },
-          function(data) {
-            console.log("$.get.response: %o", data);
-
-            pivotalToken = $(data).find('guid').text().trim();
-
-            if (pivotalToken && pivotalToken.length > 0) {
-              chrome.cookies.set({
-                  url: RALLY_URL,
-                  name: PT_COOKIE_NAME,
-                  value: pivotalToken
-              });
-              showLinkView();
-            }
-          },
-          'xml');
-    console.log("sent request to pivotal");
+    pivotal_connector.login($('#username').val(), $('#password').val(), 
+        function(success) {
+          if (success) {
+            showLinkView();
+          } else {
+            console.error("could not login for some reason");
+          }
+        });
   }
 
   function showLinkView() {
@@ -122,13 +96,16 @@ $(function() {
 
   function linkStoryToPivotal(story) {
     addStatusMsg("adding story to Pivotal Tracker.");
-    getPivotalProjects();
+    pivotal_connector.findProjects(function(result) {
+          console.log("findProject result from connector: %o", result);
+        });
   }
   
   function onLogout() {
     console.log('onLogout');
-    chrome.cookies.remove({url: RALLY_URL, name: PT_COOKIE_NAME});
-    showLoginView();
+    pivotal_connector.logout(function() {
+      showLoginView();
+    });
   }
 
   function onReset() {
@@ -136,18 +113,5 @@ $(function() {
     $("#user_story").val("").focus();
     $("#status_msgs").empty();
     $("#link_status").hide();
-  }
-
-  function getPivotalProjects() {
-    $.ajax(PIVOTAL_GET_PROJECTS, {
-        headers: { 'X-TrackerToken': pivotalToken},
-        dataType: 'xml',
-        success: function(data, textStatus, jqXHR) {
-          console.log("success: %o", data);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.error("error: %o", errorThrown);
-        }
-      });
   }
 });
