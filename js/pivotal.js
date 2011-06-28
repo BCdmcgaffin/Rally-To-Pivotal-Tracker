@@ -103,9 +103,7 @@ function Pivotal() {
       contentType: 'application/xml',
       dataType: 'xml',
       success: function(data, textStatus, jqXHR) {
-        console.log("success: %o", data);
-
-        if (callback) { callback(projects) }
+        if (callback) { callback(data); }
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.error("error: %o", errorThrown);

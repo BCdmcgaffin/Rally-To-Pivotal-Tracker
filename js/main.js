@@ -70,20 +70,16 @@ $(function() {
         });
   }
 
-  // Add Rally story to Pivotal Tracker
-  // @param story:
-  //          ObjectID       1010101
-  //          Name           Some Story Name
-  //          Description    ...description of story...
-  //          FormattedID    US16001
-  //          URL:           https://rally1.rallydev.com/slm/detail/ar/3068546025
-  //
   function linkStoryToPivotal(story) {
     addStatusMsg("adding story to Pivotal Tracker.");
     pivotal_connector.findProjects(function(projects) {
           console.log("findProject result from connector: %o", projects);
           if (projects.length == 1) {
-            pivotal_connector.addStory(story, projects[0]);
+            pivotal_connector.addStory(story, projects[0], function(result) {
+              var pivotal_url = $(result).find('url').text();
+              console.log("pivotal story url: %s", pivotal_url);
+
+            });
           } else {
             console.error("There are more projects than the 1 that I was expecting: %o", projects);
           }
