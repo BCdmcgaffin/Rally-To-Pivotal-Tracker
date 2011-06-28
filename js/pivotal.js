@@ -1,7 +1,14 @@
 function Pivotal() {
-  var PT_COOKIE_NAME = "PT_TOKEN";
-  var PIVOTAL_GET_TOKENS = "https://www.pivotaltracker.com/services/v3/tokens/active";
-  var PIVOTAL_GET_PROJECTS = "https://www.pivotaltracker.com/services/v3/projects";
+  const PT_COOKIE_NAME = "PT_TOKEN";
+  const PIVOTAL_BASE_URL = "https://www.pivotaltracker.com/services/v3";
+  const PIVOTAL_GET_TOKENS = PIVOTAL_BASE_URL + "/tokens/active";
+  const PIVOTAL_GET_PROJECTS = PIVOTAL_BASE_URL + "/projects";
+  const PIVOTAL_ADD_STORY = PIVOTAL_GET_PROJECTS + "/##PROJECT_ID##/stories";
+  const PIVOTAL_NEW_STORY_XML = 
+          "<story><story_type>feature</story_type>" + 
+            "<name>##STORY_NAME##</name>" + 
+            "<description>##STORY_DESCRIPTION##</description>" +
+          "</story>";
 
   var COOKIE_URL = "https://rally1.rallydev.com";
 
@@ -16,8 +23,7 @@ function Pivotal() {
     chrome.cookies.get(
         {url: COOKIE_URL, name: PT_COOKIE_NAME},
         function(cookie) {
-          console.log("cookie callback: %o", cookie);
-          callback(cookie);
+          if (callback) { callback(cookie); }
           if (cookie) {
             api_token = cookie.value;
           }
@@ -40,9 +46,9 @@ function Pivotal() {
                   name: PT_COOKIE_NAME,
                   value: api_token
               });
-              callback(true);
+              if (callback) { callback(true); }
             } else {
-              callback(false);
+              if (callback) { callback(false); }
             }
           },
           'xml');
@@ -53,28 +59,66 @@ function Pivotal() {
     verifyAPIToken();
 
     chrome.cookies.remove({url: COOKIE_URL, name: PT_COOKIE_NAME});
-    callback();
+    if (callback) { callback(); }
   };
 
   my.findProjects = function(callback) {
     verifyAPIToken();
 
     $.ajax(PIVOTAL_GET_PROJECTS, {
-        headers: { 'X-TrackerToken': api_token},
-        dataType: 'xml',
-        success: function(data, textStatus, jqXHR) {
-          console.log("success: %o", data);
-          callback(data);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.error("error: %o", errorThrown);
-          callback(textStatus);
-        }
-      });
+      headers: { 'X-TrackerToken': api_token},
+      dataType: 'xml',
+      success: function(data, textStatus, jqXHR) {
+        console.log("success: %o", data);
+
+        var projects = [];
+        $(data).find('project').each(function(p) {
+              projects.push({
+                id: $($(this).children()[0]).text(),
+                name: $($(this).children()[1]).text()
+              });
+            });
+
+        if (callback) { callback(projects); }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error("error: %o", errorThrown);
+        if (callback) { callback(textStatus); }
+      }
+    });
   };
 
-  my.addStory = function(rally_id, name, description, link, callback) {
+ // my.addStory = function(rally_id, name, description, link, callback) {
+  my.addStory = function(rally_story, pivotal_project, callback) {
     verifyAPIToken();
+    
+    console.log("about to append Rally Story, %o, to pivotal_project, %o",
+                rally_story, pivotal_project);
+    var request = PIVOTAL_ADD_STORY.replace("##PROJECT_ID##", pivotal_project.id);
+    var story_data = PIVOTAL_NEW_STORY_XML.replace("##STORY_NAME##", rally_story.Name);
+    story_data = story_data.replace("##STORY_DESCRIPTION##", rally_story.Description);
+
+
+    console.log("add story request: %s", request);
+    console.log("add story data: %s", story_data);
+    
+
+    $.ajax(request, {
+      headers: { 'X-TrackerToken': api_token},
+      type: 'POST',
+      data: story_data,
+      contentType: 'application/xml',
+      dataType: 'xml',
+      success: function(data, textStatus, jqXHR) {
+        console.log("success: %o", data);
+
+        if (callback) { callback(projects) }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error("error: %o", errorThrown);
+        if (callback) { callback(textStatus); }
+      }
+    });
   };
 
   return my;
