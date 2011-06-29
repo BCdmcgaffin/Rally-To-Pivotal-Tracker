@@ -113,17 +113,15 @@ function Pivotal() {
   };
 
   function prepareStoryData(rally_story) {
-    var description =  RALLY_DIRECT_URL + rally_story.ObjectID + "\n\n" + stripHTML(rally_story.Description);
+    var description =  RALLY_DIRECT_URL + rally_story.ObjectID + "\n\n" + escapeHTML(rally_story.Description);
     var story_data = PIVOTAL_NEW_STORY_XML.replace("##STORY_NAME##", rally_story.Name);
     story_data = story_data.replace("##STORY_DESCRIPTION##", description);
 
     return story_data;
   }
 
-  function stripHTML(content)  {
-    var tmp = document.createElement("div");
-    tmp.innerHTML = content;
-    return tmp.textContent || tmp.innerText;
+  function escapeHTML(content)  {
+    return $("<div/>").text(content).html();
   }
   
   return my;
