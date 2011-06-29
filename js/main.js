@@ -58,7 +58,7 @@ $(function() {
     var story_id = $("#user_story").val().trim();
     $("#link_status").show();
 
-    addStatusMsg("searching for US10061");
+    addStatusMsg("searching for " + story_id);
     rally_connector.findUserStory(story_id, function(result) {
           if (result.error) {
             console.error("findUserStory returned an error: %o", result);
@@ -79,6 +79,12 @@ $(function() {
               var pivotal_url = $(result).find('url').text();
               console.log("pivotal story url: %s", pivotal_url);
               addStatusMsg("story created in <a href='" + pivotal_url + "' target='_blank'>pivotal</a>");
+
+              rally_connector.updateUserStoryWithPivotalLink(story, pivotal_url, 
+                  function(data) {
+                    console.log('updateUserStory callback: %o', data);
+                  });
+                
             });
           } else {
             console.error("There are more projects than the 1 that I was expecting: %o", projects);
