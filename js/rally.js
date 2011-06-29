@@ -32,7 +32,7 @@ function Rally() {
 
   my.updateUserStoryWithPivotalLink = function(rally_story, pivotal_url, callback) {
     var request_url = UPDATE_STORY.replace("##STORY_ID##", rally_story.ObjectID);
-    var description = rally_story.Description + "<br/><br/><b>pivotal story:</b> <a href='" + pivotal_url + "'>" + pivotal_url + "</a>";
+    var description = rally_story.Description + "<br/><br/><b>pivotal story:</b> <a target='_blank' href='" + pivotal_url + "'>" + pivotal_url + "</a>";
 
     $.ajax(request_url, { 
             headers: { 'Content-Type': 'text/xml;charset=utf-8' },
