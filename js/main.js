@@ -71,14 +71,14 @@ $(function() {
   }
 
   function linkStoryToPivotal(story) {
-    addStatusMsg("adding story to Pivotal Tracker.");
+    addStatusMsg("adding story to pivotal tracker");
     pivotal_connector.findProjects(function(projects) {
           console.log("findProject result from connector: %o", projects);
           if (projects.length == 1) {
             pivotal_connector.addStory(story, projects[0], function(result) {
               var pivotal_url = $(result).find('url').text();
               console.log("pivotal story url: %s", pivotal_url);
-              addStatusMsg("story created in <a href='" + pivotal_url + "' target='_blank'>pivotal</a>");
+              addStatusMsg("story created in <a href='" + pivotal_url + "' target='_blank'>pivotal tracker</a>");
 
               rally_connector.updateUserStoryWithPivotalLink(story, pivotal_url, 
                   function(data) {
