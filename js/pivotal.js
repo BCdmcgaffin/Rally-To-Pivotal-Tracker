@@ -17,10 +17,6 @@ function Pivotal() {
   var api_token;
   var my = {};
 
-  function verifyAPIToken() {
-    if (!api_token) { throw "No API Token has been set."; }
-  }
-
   my.isLoggedIn = function(callback) {
     chrome.cookies.get(
         {url: COOKIE_URL, name: PT_COOKIE_NAME},
@@ -30,11 +26,9 @@ function Pivotal() {
             api_token = cookie.value;
           }
         });
-
   };
 
   my.login = function(username, password, callback) {
-    console.log("login to pivotal");
     $.post(PIVOTAL_GET_TOKENS, 
           { username: username.trim(), password: password.trim() },
           function(data) {
@@ -54,7 +48,6 @@ function Pivotal() {
             }
           },
           'xml');
-    console.log("sent request to pivotal");
   };
 
   my.logout = function(callback) {
@@ -112,6 +105,7 @@ function Pivotal() {
     });
   };
 
+  // private functions
   function prepareStoryData(rally_story) {
     var description =  RALLY_DIRECT_URL + rally_story.ObjectID + "\n\n" + escapeHTML(rally_story.Description);
     var story_data = PIVOTAL_NEW_STORY_XML.replace("##STORY_NAME##", rally_story.Name);
@@ -124,5 +118,9 @@ function Pivotal() {
     return $("<div/>").text(content).html();
   }
   
+  function verifyAPIToken() {
+    if (!api_token) { throw "No API Token has been set."; }
+  }
+
   return my;
 }
